@@ -1,3 +1,11 @@
+# ProjectMM 클론 관리
+* [master](./tree/master) 브랜치 : https://github.com/Tencent/behaviac/tree/master 와 같음
+* [mm-dev](./tree/mm-dev) 브랜치 : 개발용 커밋을 쌓아올림. 주기적으로 master로부터 가져온다.
+
+---
+---
+---
+
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/Tencent/behaviac/blob/master/license.txt)
 [![Release Version](https://img.shields.io/badge/release-3.6.39-red.svg)](https://github.com/Tencent/behaviac/releases)
 [![Updates](https://img.shields.io/badge/Platform-%20iOS%20%7C%20OS%20X%20%7C%20Android%20%7C%20Windows%20%7C%20Linux%20-brightgreen.svg)](https://github.com/Tencent/behaviac/blob/master/history.txt)
