@@ -1,6 +1,6 @@
 # ProjectMM 클론 관리
-* [master](./tree/master) 브랜치 : https://github.com/Tencent/behaviac/tree/master 와 같음
-* [mm-dev](./tree/mm-dev) 브랜치 : 개발용 커밋을 쌓아올림. 주기적으로 master로부터 가져온다.
+* [master](https://github.com/nxgtri/behaviac/tree/master) 브랜치 : https://github.com/Tencent/behaviac/tree/master 와 같음
+* [mm-dev](https://github.com/nxgtri/behaviac/tree/mm-dev) 브랜치 : 개발용 커밋을 쌓아올림. 주기적으로 master로부터 가져온다.
 
 ---
 ---
