@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -158,7 +159,7 @@ namespace behaviac
 
             string aName = string.Format("{0}#{1}", agentClassName, agentInstanceName);
 
-            ms_agents.Remove(aName);
+            ms_agents.TryRemove(aName, out var _);
 #endif
 
             Context.RemoveAgent(this);
@@ -177,7 +178,7 @@ namespace behaviac
         }
 
 #if !BEHAVIAC_RELEASE
-        private static Dictionary<string, Agent> ms_agents = new Dictionary<string, Agent>();
+        private static ConcurrentDictionary<string, Agent> ms_agents = new ConcurrentDictionary<string, Agent>();
 
         public static Agent GetAgent(string agentName)
         {
@@ -188,9 +189,8 @@ namespace behaviac
                 return pAgent;
             }
 
-            if (ms_agents.ContainsKey(agentName))
+            if (ms_agents.TryGetValue(agentName, out var pA))
             {
-                Agent pA = ms_agents[agentName];
                 return pA;
             }
 
@@ -370,7 +370,7 @@ namespace behaviac
         }
 
         private static int ms_agent_index;
-        private static Dictionary<string, int> ms_agent_type_index;
+        private static ConcurrentDictionary<string, int> ms_agent_type_index;
 
         public void SetName(string instanceName)
         {
@@ -392,18 +392,11 @@ namespace behaviac
 
                 if (ms_agent_type_index == null)
                 {
-                    ms_agent_type_index = new Dictionary<string, int>();
+                    ms_agent_type_index = new ConcurrentDictionary<string, int>();
                 }
 
-                if (!ms_agent_type_index.ContainsKey(typeFullName))
-                {
-                    typeId = 0;
-                    ms_agent_type_index[typeFullName] = 1;
-                }
-                else
-                {
-                    typeId = ms_agent_type_index[typeFullName]++;
-                }
+                typeId = ms_agent_type_index.AddOrUpdate(typeFullName, 1, (key, value) => ++value);
+                typeId--;
 
                 this.name += string.Format("{0}_{1}_{2}", typeName, typeId, this.m_id);
             }

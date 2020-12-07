@@ -1475,6 +1475,8 @@ namespace behaviac
 
         #region Load
 
+        // XML에서 읽은 정보를 여기 넣어둔다
+        // BehaviorTreeTask를 만들때마다 이걸 참조해서 만든다
         private Dictionary<string, BehaviorTree> m_behaviortrees;
 
         private Dictionary<string, BehaviorTree> BehaviorTrees
@@ -1507,6 +1509,9 @@ namespace behaviac
 
         public void RecordBTAgentMapping(string relativePath, Agent agent)
         {
+            /*
+             * @k.n.park : thread safe 패치
+             *
             if (m_allBehaviorTreeTasks == null)
             {
                 m_allBehaviorTreeTasks = new Dictionary<string, BTItem_t>();
@@ -1524,6 +1529,8 @@ namespace behaviac
             {
                 btItems.agents.Add(agent);
             }
+
+            */
         }
 
         public void UnLoad(string relativePath)
@@ -1539,7 +1546,13 @@ namespace behaviac
 
         public void UnLoadAll()
         {
+            /*
+             * @k.n.park : thread safe 패치
+             *
             m_allBehaviorTreeTasks.Clear();
+
+            */
+
             BehaviorTrees.Clear();
             BTCreators.Clear();
         }
@@ -1816,13 +1829,24 @@ namespace behaviac
             return true;
         }
 
+        /*
+         * @k.n.park : thread safe하게 만들기 위해 경합이 발생하는 영역을 제거
+         *
         private class BTItem_t
         {
+            // BehaviorTreeTask : BT인스턴스
             public List<BehaviorTreeTask> bts = new List<BehaviorTreeTask>();
+
+            // Agent : Agent인스턴스
+            // Agent 1개 당 BehaviorTreeTask 1개
+            // 근데 갯수가 다를수도 잇음
             public List<Agent> agents = new List<Agent>();
         };
 
+        // relativePath -> BTItem_t
         private Dictionary<string, BTItem_t> m_allBehaviorTreeTasks = new Dictionary<string, BTItem_t>();
+
+        */
 
         /**
         uses the behavior tree in the cache, if not loaded yet, it loads the behavior tree first
@@ -1855,6 +1879,9 @@ namespace behaviac
                 Debug.Check(task is BehaviorTreeTask);
                 BehaviorTreeTask behaviorTreeTask = task as BehaviorTreeTask;
 
+                /*
+                 * @k.n.park : thread safe 패치
+                 *
                 if (!m_allBehaviorTreeTasks.ContainsKey(relativePath))
                 {
                     m_allBehaviorTreeTasks[relativePath] = new BTItem_t();
@@ -1867,6 +1894,8 @@ namespace behaviac
                     btItem.bts.Add(behaviorTreeTask);
                 }
 
+                */
+
                 return behaviorTreeTask;
             }
 
@@ -1875,6 +1904,9 @@ namespace behaviac
 
         public void DestroyBehaviorTreeTask(BehaviorTreeTask behaviorTreeTask, Agent agent)
         {
+            /*
+             * @k.n.park : thread safe 패치
+             *
             if (behaviorTreeTask != null)
             {
                 if (m_allBehaviorTreeTasks.ContainsKey(behaviorTreeTask.GetName()))
@@ -1890,6 +1922,8 @@ namespace behaviac
 
                 BehaviorTask.DestroyTask(behaviorTreeTask);
             }
+
+            */
         }
 
         public Dictionary<string, BehaviorTree> GetBehaviorTrees()

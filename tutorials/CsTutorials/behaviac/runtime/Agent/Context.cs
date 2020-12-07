@@ -12,13 +12,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace behaviac
 {
     public class Context
     {
-        private static Dictionary<int, Context> ms_contexts = new Dictionary<int, Context>();
+        private static ConcurrentDictionary<int, Context> ms_contexts = new ConcurrentDictionary<int, Context>();
 
         private Dictionary<string, Agent> m_namedAgents = new Dictionary<string, Agent>();
 
@@ -89,16 +90,10 @@ namespace behaviac
         {
             Debug.Check(contextId >= 0);
 
-            if (ms_contexts.ContainsKey(contextId))
+            return ms_contexts.GetOrAdd(contextId, (key) =>
             {
-                Context pContext = ms_contexts[contextId];
-                return pContext;
-            }
-
-            Context pC = new Context(contextId);
-            ms_contexts[contextId] = pC;
-
-            return pC;
+                return new Context(key);
+            });
         }
 
         public static void Cleanup(int contextId)
@@ -112,11 +107,7 @@ namespace behaviac
                 }
                 else
                 {
-                    if (ms_contexts.ContainsKey(contextId))
-                    {
-                        ms_contexts.Remove(contextId);
-                    }
-                    else
+                    if (!ms_contexts.TryRemove(contextId, out var _))
                     {
                         Debug.Check(false, "unused context id");
                     }
@@ -236,24 +227,13 @@ namespace behaviac
             if (contextId >= 0)
             {
                 Context pContext = Context.GetContext(contextId);
-
-                if (pContext != null)
-                {
-                    pContext.execAgents_();
-                }
+                pContext?.execAgents_();
             }
             else
             {
-                var e = ms_contexts.GetEnumerator();
-
-                while (e.MoveNext())
+                foreach (var context in ms_contexts.Values)
                 {
-                    Context pContext = e.Current.Value;
-
-                    if (pContext != null)
-                    {
-                        pContext.execAgents_();
-                    }
+                    context?.execAgents_();
                 }
             }
         }
@@ -333,11 +313,9 @@ namespace behaviac
             }
             else
             {
-                var e = ms_contexts.Values.GetEnumerator();
-
-                while (e.MoveNext())
+                foreach (var context in ms_contexts.Values)
                 {
-                    e.Current.LogCurrentState();
+                    context.LogCurrentState();
                 }
             }
         }
