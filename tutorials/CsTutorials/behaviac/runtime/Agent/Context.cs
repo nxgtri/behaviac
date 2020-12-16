@@ -252,11 +252,10 @@ namespace behaviac
             for (int i = 0; i < this.Agents.Count; ++i)
             {
                 HeapItem_t pa = this.Agents[i];
-                var e = pa.agents.GetEnumerator();
 
-                while (e.MoveNext())
+                foreach(var kvp in pa.agents)
                 {
-                    Agent pAgent = e.Current.Value;
+                    Agent pAgent = kvp.Value;
                     if (pAgent.IsActive())
                     {
                         pAgent.btexec();
@@ -284,15 +283,14 @@ namespace behaviac
             for (int i = 0; i < this.Agents.Count; ++i)
             {
                 HeapItem_t pa = this.Agents[i];
-                var e = pa.agents.Values.GetEnumerator();
-
-                while (e.MoveNext())
+                
+                foreach(var agent in pa.agents.Values)
                 {
-                    if (e.Current.IsMasked())
+                    if (agent.IsMasked())
                     {
-                        e.Current.LogVariables(true);
+                        agent.LogVariables(true);
 
-                        e.Current.LogRunningNodes();
+                        agent.LogRunningNodes();
                     }
                 }
             }

@@ -1408,12 +1408,10 @@ namespace behaviac
         {
             if (vars != null)
             {
-                var e = vars.Keys.GetEnumerator();
-
-                while (e.MoveNext())
+                foreach(var kvp in vars)
                 {
-                    uint varId = e.Current;
-                    this.LocalVars[varId] = vars[varId];
+                    uint varId = kvp.Key;
+                    this.LocalVars[varId] = kvp.Value;
                 }
             }
         }

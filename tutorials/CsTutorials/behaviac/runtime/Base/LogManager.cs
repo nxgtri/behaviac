@@ -479,12 +479,10 @@ namespace behaviac
             {
                 try
                 {
-                    var e = m_logs.Values.GetEnumerator();
-
-                    while (e.MoveNext())
+                    foreach(var log in m_logs.Values)
                     {
-                        e.Current.Flush();
-                        e.Current.Close();
+                        log.Flush();
+                        log.Close();
                     }
 
                     m_logs.Clear();

@@ -1226,11 +1226,8 @@ namespace behaviac
                 Debug.Check(prop is CProperty<VariableType>);
                 CProperty<VariableType> p = (CProperty<VariableType>)prop;
 
-                if (p != null)
-                {
-                    p.SetValue(this, value);
-                    return;
-                }
+                p.SetValue(this, value);
+                return;
             }
 
             Debug.Check(false, string.Format("The variable \"{0}\" with type \"{1}\" can not be found! please check the variable name or be after loading type info(btload)!", variableName, typeof(VariableType).Name));
@@ -1257,11 +1254,9 @@ namespace behaviac
                 Debug.Check(prop is CProperty<VariableType>);
                 CProperty<VariableType> p = (CProperty<VariableType>)prop;
 
-                if (p != null)
-                {
-                    p.SetValue(this, value, index);
-                    return;
-                }
+                
+                p.SetValue(this, value, index);
+                return;
             }
 
             Debug.Check(false, string.Format("The variable \"{0}\" with type \"{1}\" can not be found!", variableName, typeof(VariableType).Name));
@@ -1302,12 +1297,9 @@ namespace behaviac
                     // local var
                     if (this.ExcutingTreeTask != null)
                     {
-                        var e = this.ExcutingTreeTask.LocalVars.Keys.GetEnumerator();
-
-                        while (e.MoveNext())
+                        foreach(var kvp in this.ExcutingTreeTask.LocalVars)
                         {
-                            uint id = e.Current;
-                            IInstantiatedVariable pVar = this.ExcutingTreeTask.LocalVars[id];
+                            IInstantiatedVariable pVar = kvp.Value;
 
                             if (pVar != null)
                             {
@@ -1325,12 +1317,10 @@ namespace behaviac
 
                         if (memberProperties != null)
                         {
-                            var e = memberProperties.Keys.GetEnumerator();
-
-                            while (e.MoveNext())
+                            foreach (var kvp in memberProperties)
                             {
-                                uint id = e.Current;
-                                IProperty pProperty = memberProperties[id];
+                                uint id = kvp.Key;
+                                IProperty pProperty = kvp.Value;
 
                                 if (!pProperty.IsArrayItem)
                                 {
@@ -1367,11 +1357,9 @@ namespace behaviac
             if (Config.IsLoggingOrSocketing && this.m_currentBT != null)
             {
                 List<BehaviorTask> runningNodes = this.m_currentBT.GetRunningNodes(false);
-                var e = runningNodes.GetEnumerator();
 
-                while (e.MoveNext())
+                foreach (BehaviorTask behaviorTask in runningNodes)
                 {
-                    BehaviorTask behaviorTask = e.Current;
                     string btStr = BehaviorTask.GetTickInfo(this, behaviorTask, "enter");
 
                     //empty btStr is for internal BehaviorTreeTask

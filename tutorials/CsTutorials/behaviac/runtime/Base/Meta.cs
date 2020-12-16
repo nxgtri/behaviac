@@ -170,12 +170,10 @@ namespace behaviac
 
             //instance customzied properties
             {
-                var e = this._customizedProperties.Keys.GetEnumerator();
-
-                while (e.MoveNext())
+                foreach(var kvp in this._customizedProperties)
                 {
-                    uint id = e.Current;
-                    ICustomizedProperty pCustomProperty = this._customizedProperties[id];
+                    uint id = kvp.Key;
+                    ICustomizedProperty pCustomProperty = kvp.Value;
 
                     vars[id] = pCustomProperty.Instantiate();
                 }
@@ -184,13 +182,11 @@ namespace behaviac
             if (_customizedStaticVars == null)
             {
                 _customizedStaticVars = new Dictionary<uint, IInstantiatedVariable>();
-
-                var e = this._customizedStaticProperties.Keys.GetEnumerator();
-
-                while (e.MoveNext())
+                
+                foreach(var kvp in this._customizedStaticProperties)
                 {
-                    uint id = e.Current;
-                    ICustomizedProperty pCustomProperty = this._customizedStaticProperties[id];
+                    uint id = kvp.Key;
+                    ICustomizedProperty pCustomProperty = kvp.Value;
 
                     this._customizedStaticVars[id] = pCustomProperty.Instantiate();
                 }
@@ -198,12 +194,10 @@ namespace behaviac
 
             //static customzied properties
             {
-                var e = this._customizedStaticVars.Keys.GetEnumerator();
-
-                while (e.MoveNext())
+                foreach(var kvp in _customizedStaticVars)
                 {
-                    uint id = e.Current;
-                    IInstantiatedVariable pVar = this._customizedStaticVars[id];
+                    uint id = kvp.Key;
+                    IInstantiatedVariable pVar = kvp.Value;
 
                     vars[id] = pVar;
                 }

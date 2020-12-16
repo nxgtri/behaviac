@@ -56,12 +56,10 @@ namespace behaviac
         public void Log(Agent agent)
         {
 #if !BEHAVIAC_RELEASE
-            var e = this.m_variables.Keys.GetEnumerator();
-
-            while (e.MoveNext())
+            foreach(var kvp in this.m_variables)
             {
-                uint id = e.Current;
-                IInstantiatedVariable pVar = this.m_variables[id];
+                uint id = kvp.Key;
+                IInstantiatedVariable pVar = kvp.Value;
 
                 pVar.Log(agent);
             }
@@ -89,12 +87,10 @@ namespace behaviac
         {
             target.m_variables.Clear();
 
-            var e = this.m_variables.Keys.GetEnumerator();
-
-            while (e.MoveNext())
+            foreach(var kvp in this.m_variables)
             {
-                uint id = e.Current;
-                IInstantiatedVariable pVar = this.m_variables[id];
+                uint id = kvp.Key;
+                IInstantiatedVariable pVar = kvp.Value;
                 IInstantiatedVariable pNew = pVar.clone();
 
                 target.m_variables[id] = pNew;
@@ -102,11 +98,8 @@ namespace behaviac
 
             if (!Object.ReferenceEquals(pAgent, null))
             {
-                e = target.m_variables.Keys.GetEnumerator();
-
-                while (e.MoveNext())
+                foreach(uint id in target.m_variables.Keys)
                 {
-                    uint id = e.Current;
                     IInstantiatedVariable pVar = this.m_variables[id];
 
                     pVar.CopyTo(pAgent);
@@ -118,12 +111,10 @@ namespace behaviac
         {
             CSerializationID variablesId = new CSerializationID("vars");
             ISerializableNode varsNode = node.newChild(variablesId);
-
-            var e = this.m_variables.Values.GetEnumerator();
-
-            while (e.MoveNext())
+            
+            foreach(var instantiatedVariable in this.m_variables.Values)
             {
-                e.Current.Save(varsNode);
+                instantiatedVariable.Save(varsNode);
             }
         }
 
